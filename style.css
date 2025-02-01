@@ -1,0 +1,72 @@
+button {
+  align-items: center;
+  background-color: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: .25rem;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  box-sizing: border-box;
+  color: rgba(0, 0, 0, 0.85);
+  cursor: pointer;
+  display: inline-flex;
+  font-family: system-ui,-apple-system,system-ui,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  justify-content: center;
+  line-height: 1.25;
+  margin: 0;
+  min-height: 3rem;
+  padding: calc(.875rem - 1px) calc(1.5rem - 1px);
+  position: relative;
+  text-decoration: none;
+  transition: all 250ms;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  vertical-align: baseline;
+  width: auto;
+}
+
+button:hover,
+button:focus {
+  border-color: rgba(0, 0, 0, 0.15);
+  color: rgba(0, 0, 0, 0.65);
+}
+
+button:hover {
+  transform: translateY(-1px);
+}
+
+button:active {
+  background-color: #F0F0F1;
+  border-color: rgba(0, 0, 0, 0.15);
+  box-shadow: rgba(0, 0, 0, 0.06) 0 2px 4px;
+  color: rgba(0, 0, 0, 0.65);
+  transform: translateY(0);
+}
+
+canvas {
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+    padding: 16px;
+    border: whitesmoke 1px solid;
+    margin: 8px;
+    max-width: 100%;
+}
+
+.page {
+    font-family: "Poppins", serif;
+    display: flex;
+    flex-direction: column;
+    width: 75%;
+    place-items: center;
+    margin: auto;
+}
+
+.button-holder {
+    display: flex;
+    gap: 8px;
+    margin: 8px;
+}
+
+#prompt {
+    opacity: 0.5;
+}
