@@ -38,14 +38,23 @@ var Day2 = /** @class */ (function (_super) {
         this.width = this.grid[0].length;
         this.imageGrid = new Uint8ClampedArray(4 * this.height * this.width);
         var image = new Image();
-        image.crossOrigin = "anonymous";
         image.src = "./img/me.png";
         image.onload = function () {
             var width = image.naturalWidth, height = image.naturalHeight;
-            var canvas = new OffscreenCanvas(width, height);
-            var ctx = canvas.getContext("2d");
-            ctx.drawImage(image, 0, 0);
-            _this.imageData = ctx.getImageData(0, 0, width, height);
+            try {
+                var canvas_1 = new OffscreenCanvas(width, height);
+                var ctx_1 = canvas_1.getContext("2d");
+                ctx_1.drawImage(image, 0, 0);
+                _this.imageData = ctx_1.getImageData(0, 0, width, height);
+            }
+            catch (e) {
+                console.error(e);
+                console.log("trying backup");
+                var ctx_2 = _this.ctx;
+                ctx_2.drawImage(image, 0, 0);
+                _this.imageData = ctx_2.getImageData(0, 0, width, height);
+                ctx_2.clearRect(0, 0, width, height);
+            }
             spawnImage();
         };
         var spawnImage = function () {

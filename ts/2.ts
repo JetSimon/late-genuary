@@ -30,14 +30,25 @@ class Day2 extends Day {
         this.imageGrid = new Uint8ClampedArray(4 * this.height * this.width);
 
         const image = new Image();
-        image.crossOrigin = "anonymous";
         image.src = "./img/me.png";
         image.onload = () => {
             const { naturalWidth: width, naturalHeight: height } = image;
-            const canvas = new OffscreenCanvas(width, height);
-            const ctx = canvas.getContext("2d");
-            ctx.drawImage(image, 0, 0);
-            this.imageData = ctx.getImageData(0, 0, width, height);
+            try {
+                const canvas = new OffscreenCanvas(width, height);
+                const ctx = canvas.getContext("2d");
+                ctx.drawImage(image, 0, 0);
+                this.imageData = ctx.getImageData(0, 0, width, height);
+            }
+            catch (e) {
+                console.error(e);
+                console.log("trying backup");
+
+                const ctx = this.ctx;
+                ctx.drawImage(image, 0, 0);
+                this.imageData = ctx.getImageData(0, 0, width, height);
+                ctx.clearRect(0, 0, width, height);
+            }
+
             spawnImage();
         };
 
