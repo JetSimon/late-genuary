@@ -13,6 +13,7 @@ class Day2 extends Day {
     private height: number = 0;
     private width: number = 0;
 
+    private imageData: ImageData;
     private imageGrid: Uint8ClampedArray;
     private startGravity: boolean = false;
     private drain: boolean = false;
@@ -28,30 +29,29 @@ class Day2 extends Day {
         this.width = this.grid[0].length;
         this.imageGrid = new Uint8ClampedArray(4 * this.height * this.width);
 
-        const spawnImage = () => {
-            const image = new Image();
-            image.crossOrigin = "anonymous";
-            image.src = "./img/me.png";
-            image.onload = () => {
-                const { naturalWidth: width, naturalHeight: height } = image;
-                const canvas = new OffscreenCanvas(width, height);
-                const ctx = canvas.getContext("2d");
-                ctx.drawImage(image, 0, 0);
-                const imageData = ctx.getImageData(0, 0, width, height);
-
-                for (let i = 0; i < imageData.data.length; i += 4) {
-                    const y = Math.floor((i / 4) / imageData.width);
-                    const x = (i / 4) % imageData.width;
-                    if (imageData.data[i + 3] && this.grid[y][x] == null)
-                        this.grid[y][x] = new Sand(new RGBA(imageData.data[i], imageData.data[i + 1], imageData.data[i + 2], imageData.data[i + 3]));
-                }
-
-                setTimeout(() => this.startGravity = true, 250);
-                this.spawnImageHandle = setTimeout(() => spawnImage(), 20000);
-            };
+        const image = new Image();
+        image.crossOrigin = "anonymous";
+        image.src = "./img/me.png";
+        image.onload = () => {
+            const { naturalWidth: width, naturalHeight: height } = image;
+            const canvas = new OffscreenCanvas(width, height);
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(image, 0, 0);
+            this.imageData = ctx.getImageData(0, 0, width, height);
+            spawnImage();
         };
 
-        spawnImage();
+        const spawnImage = () => {
+            for (let i = 0; i < this.imageData.data.length; i += 4) {
+                const y = Math.floor((i / 4) / this.imageData.width);
+                const x = (i / 4) % this.imageData.width;
+                if (this.imageData.data[i + 3] && this.grid[y][x] == null)
+                    this.grid[y][x] = new Sand(new RGBA(this.imageData.data[i], this.imageData.data[i + 1], this.imageData.data[i + 2], this.imageData.data[i + 3]));
+            }
+
+            setTimeout(() => this.startGravity = true, 250);
+            this.spawnImageHandle = setTimeout(() => spawnImage(), 20000);
+        };
     }
 
     cleanup(): void {

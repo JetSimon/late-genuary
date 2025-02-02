@@ -37,27 +37,27 @@ var Day2 = /** @class */ (function (_super) {
         this.height = this.grid.length;
         this.width = this.grid[0].length;
         this.imageGrid = new Uint8ClampedArray(4 * this.height * this.width);
-        var spawnImage = function () {
-            var image = new Image();
-            image.crossOrigin = "anonymous";
-            image.src = "./img/me.png";
-            image.onload = function () {
-                var width = image.naturalWidth, height = image.naturalHeight;
-                var canvas = new OffscreenCanvas(width, height);
-                var ctx = canvas.getContext("2d");
-                ctx.drawImage(image, 0, 0);
-                var imageData = ctx.getImageData(0, 0, width, height);
-                for (var i = 0; i < imageData.data.length; i += 4) {
-                    var y = Math.floor((i / 4) / imageData.width);
-                    var x = (i / 4) % imageData.width;
-                    if (imageData.data[i + 3] && _this.grid[y][x] == null)
-                        _this.grid[y][x] = new Sand(new RGBA(imageData.data[i], imageData.data[i + 1], imageData.data[i + 2], imageData.data[i + 3]));
-                }
-                setTimeout(function () { return _this.startGravity = true; }, 250);
-                _this.spawnImageHandle = setTimeout(function () { return spawnImage(); }, 20000);
-            };
+        var image = new Image();
+        image.crossOrigin = "anonymous";
+        image.src = "./img/me.png";
+        image.onload = function () {
+            var width = image.naturalWidth, height = image.naturalHeight;
+            var canvas = new OffscreenCanvas(width, height);
+            var ctx = canvas.getContext("2d");
+            ctx.drawImage(image, 0, 0);
+            _this.imageData = ctx.getImageData(0, 0, width, height);
+            spawnImage();
         };
-        spawnImage();
+        var spawnImage = function () {
+            for (var i = 0; i < _this.imageData.data.length; i += 4) {
+                var y = Math.floor((i / 4) / _this.imageData.width);
+                var x = (i / 4) % _this.imageData.width;
+                if (_this.imageData.data[i + 3] && _this.grid[y][x] == null)
+                    _this.grid[y][x] = new Sand(new RGBA(_this.imageData.data[i], _this.imageData.data[i + 1], _this.imageData.data[i + 2], _this.imageData.data[i + 3]));
+            }
+            setTimeout(function () { return _this.startGravity = true; }, 250);
+            _this.spawnImageHandle = setTimeout(function () { return spawnImage(); }, 20000);
+        };
     };
     Day2.prototype.cleanup = function () {
         clearTimeout(this.spawnImageHandle);
