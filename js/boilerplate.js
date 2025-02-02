@@ -12,6 +12,8 @@ var Day = /** @class */ (function () {
     Day.prototype.stop = function () {
         clearInterval(this.loopHandle);
     };
+    Day.prototype.init = function () {
+    };
     Day.prototype.loop = function () {
     };
     return Day;
@@ -20,10 +22,9 @@ var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
 var days = new Map();
 var currentDay = null;
-function makeDay(day, prompt) {
-    var d = new Day(day, ctx, prompt);
-    days.set(day, d);
-    return d;
+var day = new Day(0, ctx, "");
+function addDay(d) {
+    days.set(d.day, d);
 }
 function startDay(day) {
     var d = days.get(day);
@@ -37,7 +38,9 @@ function startDay(day) {
     }
     document.getElementById("prompt").innerText = d.prompt;
     currentDay = d;
+    d.init();
     d.start();
+    console.log(d);
 }
 function stopDay(day) {
     var d = days.get(day);

@@ -26,6 +26,10 @@ class Day {
         clearInterval(this.loopHandle);
     }
 
+    init() {
+
+    }
+
     loop() {
 
     }
@@ -36,11 +40,10 @@ const ctx: CanvasRenderingContext2D = canvas.getContext("2d");
 
 const days = new Map<number, Day>();
 let currentDay : null | Day = null;
+let day : Day = new Day(0, ctx, "");
 
-function makeDay(day : number, prompt : string) : Day {
-    const d = new Day(day, ctx, prompt);
-    days.set(day, d);
-    return d;
+function addDay(d : Day) {
+    days.set(d.day, d);
 }
 
 function startDay(day : number) {
@@ -60,7 +63,9 @@ function startDay(day : number) {
     document.getElementById("prompt").innerText = d.prompt;
 
     currentDay = d;
+    d.init();
     d.start();
+    console.log(d)
 }
 
 function stopDay(day : number) {
