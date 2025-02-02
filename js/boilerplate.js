@@ -3,18 +3,13 @@ var Day = /** @class */ (function () {
         this.prompt = prompt;
         this.day = day;
         this.ctx = ctx;
-        this.mouseX = -1;
-        this.mouseY = -1;
     }
     Day.prototype.start = function () {
-        this.loopHandle = setInterval(this.loop, 1000 / 60);
+        var _this = this;
+        this.loopHandle = setInterval(function () { return _this.loop(); }, 1000 / 60);
     };
     Day.prototype.stop = function () {
         clearInterval(this.loopHandle);
-    };
-    Day.prototype.init = function () {
-    };
-    Day.prototype.loop = function () {
     };
     return Day;
 }());
@@ -22,7 +17,10 @@ var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
 var days = new Map();
 var currentDay = null;
-var day = new Day(0, ctx, "");
+var mouseX = -1;
+var mouseY = -1;
+var mouseDown = false;
+var keysDown = new Set();
 function addDay(d) {
     days.set(d.day, d);
 }
@@ -40,7 +38,13 @@ function startDay(day) {
     currentDay = d;
     d.init();
     d.start();
-    console.log(d);
+    var buttons = document.getElementsByClassName("day-button");
+    for (var i = 0; i < buttons.length; i++) {
+        var button = buttons.item(i);
+        if (button instanceof HTMLButtonElement) {
+            button.disabled = button.id == day.toString();
+        }
+    }
 }
 function stopDay(day) {
     var d = days.get(day);
@@ -49,6 +53,7 @@ function stopDay(day) {
         return;
     }
     currentDay = null;
+    d.cleanup();
     d.stop();
 }
 canvas.addEventListener("mousemove", function (e) {
@@ -56,7 +61,19 @@ canvas.addEventListener("mousemove", function (e) {
         return;
     }
     var rect = canvas.getBoundingClientRect();
-    currentDay.mouseX = e.clientX - rect.left - 16;
-    currentDay.mouseY = e.clientY - rect.top - 16;
+    mouseX = e.clientX - rect.left - 16;
+    mouseY = e.clientY - rect.top - 16;
+});
+canvas.addEventListener("mousedown", function (e) {
+    mouseDown = true;
+});
+canvas.addEventListener("mouseup", function (e) {
+    mouseDown = false;
+});
+window.addEventListener("keydown", function (e) {
+    keysDown.add(e.key);
+});
+window.addEventListener("keyup", function (e) {
+    keysDown.delete(e.key);
 });
 //# sourceMappingURL=boilerplate.js.map

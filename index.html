@@ -13,13 +13,15 @@
         <h2>late genuary</h2>
         <canvas width="512" height="512" id="canvas"></canvas>
         <p id="prompt"></p>
+        <div class="break"></div>
         <div class="button-holder">
-            <button onclick="startDay(1)">1</button>
-            <button onclick="startDay(2)">2</button>
+            <button class="day-button" id="1" onclick="startDay(1)">1</button>
+            <button class="day-button" id="2" onclick="startDay(2)">2</button>
         </div>
     </div>
+    <script src="js/utils.js"></script>
     <script src="js/boilerplate.js"></script>
-    <script class="day-button" src="js/1.js"></script>
-    <script class="day-button" src="js/2.js"></script>
+    <script src="js/1.js"></script>
+    <script src="js/2.js"></script>
 </body>
 </html>

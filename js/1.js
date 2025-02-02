@@ -18,6 +18,10 @@ var Day1 = /** @class */ (function (_super) {
     function Day1() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
+    Day1.prototype.init = function () {
+    };
+    Day1.prototype.cleanup = function () {
+    };
     Day1.prototype.loop = function () {
         var distMod = function (dist) { return 1 + (2 * dist / 512); };
         var ctx = this.ctx;
@@ -30,7 +34,7 @@ var Day1 = /** @class */ (function (_super) {
             var fill = (((offset + Date.now() / 2) % step) / step) * 255;
             for (var y = offset; y < 512; y += step) {
                 var adjustedOffset = offset;
-                var dist = distMod(Math.abs(day.mouseY - y));
+                var dist = distMod(Math.abs(mouseY - y));
                 ctx.strokeStyle = "rgb(".concat(dist * ((10 * adjustedOffset + fill * cosTime) + y / 2 * cosTime), " ").concat(dist * ((5 * adjustedOffset + fill * sinTime) + y / 2 * sinTime), " ").concat(dist * ((adjustedOffset * fill * tanTime) + y / 2) * cosTime, ")");
                 ctx.beginPath();
                 ctx.moveTo(0, y);
@@ -40,7 +44,7 @@ var Day1 = /** @class */ (function (_super) {
             }
             for (var x = offset; x < 512; x += step) {
                 var adjustedOffset = 1;
-                var dist = distMod(Math.abs(day.mouseX - x));
+                var dist = distMod(Math.abs(mouseX - x));
                 ctx.strokeStyle = "rgb(".concat(dist * ((10 * adjustedOffset + fill * cosTime) + sinTime * x / 2), " ").concat(dist * ((5 * adjustedOffset + fill * sinTime) + x / 2 * cosTime), " ").concat(dist * ((adjustedOffset * fill * tanTime) + x / 2 * sinTime), ")");
                 ctx.beginPath();
                 ctx.moveTo(x, 0);

@@ -1,4 +1,13 @@
 class Day1 extends Day {
+
+    init() {
+
+    }
+
+    cleanup(): void {
+
+    }
+
     loop() {
 
         const distMod = (dist: number) => 1 + (2 * dist / 512);
@@ -19,7 +28,7 @@ class Day1 extends Day {
 
             for (let y = offset; y < 512; y += step) {
                 const adjustedOffset = offset;
-                const dist = distMod(Math.abs(day.mouseY - y));
+                const dist = distMod(Math.abs(mouseY - y));
                 ctx.strokeStyle = `rgb(${dist * ((10 * adjustedOffset + fill * cosTime) + y / 2 * cosTime)} ${dist * ((5 * adjustedOffset + fill * sinTime) + y / 2 * sinTime)} ${dist * ((adjustedOffset * fill * tanTime) + y / 2) * cosTime})`;
                 ctx.beginPath();
                 ctx.moveTo(0, y);
@@ -30,7 +39,7 @@ class Day1 extends Day {
 
             for (let x = offset; x < 512; x += step) {
                 const adjustedOffset = 1;
-                const dist = distMod(Math.abs(day.mouseX - x));
+                const dist = distMod(Math.abs(mouseX - x));
                 ctx.strokeStyle = `rgb(${dist * ((10 * adjustedOffset + fill * cosTime) + sinTime * x / 2)} ${dist * ((5 * adjustedOffset + fill * sinTime) + x / 2 * cosTime)} ${dist * ((adjustedOffset * fill * tanTime) + x / 2 * sinTime)})`;
                 ctx.beginPath();
                 ctx.moveTo(x, 0);

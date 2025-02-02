@@ -1,62 +1,60 @@
-class Day {
+abstract class Day {
 
-    mouseX : number;
-    mouseY : number
+    ctx: CanvasRenderingContext2D;
+    day: number;
 
-    ctx : CanvasRenderingContext2D;
-    day : number;
+    loopHandle: number;
 
-    loopHandle : number;
+    prompt: string;
 
-    prompt : string;
-
-    constructor(day : number, ctx : CanvasRenderingContext2D, prompt : string) {
+    constructor(day: number, ctx: CanvasRenderingContext2D, prompt: string) {
         this.prompt = prompt;
         this.day = day;
         this.ctx = ctx;
-        this.mouseX = -1;
-        this.mouseY = -1;
     }
 
     start() {
-        this.loopHandle = setInterval(this.loop, 1000 / 60);
+        this.loopHandle = setInterval(() => this.loop(), 1000 / 60);
     }
 
     stop() {
         clearInterval(this.loopHandle);
     }
 
-    init() {
+    abstract init(): void;
 
-    }
+    abstract cleanup(): void;
 
-    loop() {
-
-    }
+    abstract loop(): void;
 }
 
 const canvas: HTMLCanvasElement = document.getElementById("canvas") as HTMLCanvasElement;
 const ctx: CanvasRenderingContext2D = canvas.getContext("2d");
 
 const days = new Map<number, Day>();
-let currentDay : null | Day = null;
-let day : Day = new Day(0, ctx, "");
+let currentDay: null | Day = null;
 
-function addDay(d : Day) {
+let mouseX = -1;
+let mouseY = -1;
+let mouseDown = false;
+
+const keysDown = new Set<string>();
+
+function addDay(d: Day) {
     days.set(d.day, d);
 }
 
-function startDay(day : number) {
+function startDay(day: number) {
     const d = days.get(day);
 
-    if(d == undefined) {
+    if (d == undefined) {
         alert("Cannot start day with number " + day);
         return;
     }
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    if(currentDay != null) {
+    if (currentDay != null) {
         stopDay(days.get(currentDay.day)!.day);
     }
 
@@ -65,27 +63,52 @@ function startDay(day : number) {
     currentDay = d;
     d.init();
     d.start();
-    console.log(d)
+
+    const buttons = document.getElementsByClassName("day-button");
+    for (let i = 0; i < buttons.length; i++) {
+        const button = buttons.item(i);
+        if (button instanceof HTMLButtonElement) {
+            button.disabled = button.id == day.toString();
+        }
+    }
 }
 
-function stopDay(day : number) {
+function stopDay(day: number) {
     const d = days.get(day);
 
-    if(d == undefined) {
+    if (d == undefined) {
         alert("Cannot stop day with number " + day);
         return;
     }
 
     currentDay = null;
+    d.cleanup();
     d.stop();
 }
 
-canvas.addEventListener("mousemove", (e : MouseEvent) => {
-    if(currentDay == null) {
+canvas.addEventListener("mousemove", (e: MouseEvent) => {
+    if (currentDay == null) {
         return;
     }
 
     const rect = canvas.getBoundingClientRect();
-    currentDay.mouseX = e.clientX - rect.left - 16;
-    currentDay.mouseY = e.clientY - rect.top - 16;
+    mouseX = e.clientX - rect.left - 16;
+    mouseY = e.clientY - rect.top - 16;
 });
+
+canvas.addEventListener("mousedown", (e: MouseEvent) => {
+    mouseDown = true;
+});
+
+canvas.addEventListener("mouseup", (e: MouseEvent) => {
+    mouseDown = false;
+});
+
+window.addEventListener("keydown", (e: KeyboardEvent) => {
+    keysDown.add(e.key);
+});
+
+window.addEventListener("keyup", (e: KeyboardEvent) => {
+    keysDown.delete(e.key);
+});
+
