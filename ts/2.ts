@@ -142,5 +142,3 @@ class Day2 extends Day {
 
 const day2 = new Day2(2, ctx, "Layers upon layers upon layers.\n(d to drain)");
 addDay(day2);
-
-startDay(2);

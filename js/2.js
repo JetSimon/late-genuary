@@ -134,5 +134,4 @@ var Day2 = /** @class */ (function (_super) {
 }(Day));
 var day2 = new Day2(2, ctx, "Layers upon layers upon layers.\n(d to drain)");
 addDay(day2);
-startDay(2);
 //# sourceMappingURL=2.js.map
