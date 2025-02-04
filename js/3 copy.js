@@ -53,4 +53,5 @@ var Day3 = /** @class */ (function (_super) {
 }(Day));
 var day3 = new Day3(3, ctx, "Exactly 42 lines of code.");
 addDay(day3);
-//# sourceMappingURL=3.js.map
+startDay(3);
+//# sourceMappingURL=3%20copy.js.map

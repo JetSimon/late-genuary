@@ -38,5 +38,3 @@ class Day3 extends Day {
 
 const day3 = new Day3(3, ctx, "Exactly 42 lines of code.");
 addDay(day3);
-
-startDay(3);
