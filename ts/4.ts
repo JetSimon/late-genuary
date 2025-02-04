@@ -114,6 +114,7 @@ class Magnet {
 class Day4 extends Day {
     
     magnets : Magnet[] = [];
+    mouseDownPrev = false;
 
     addRandomMagnet() {
         function randomPos() {
@@ -168,6 +169,13 @@ class Day4 extends Day {
 
     loop() {
        
+       if(this.mouseDownPrev && !mouseDown) {
+            const sign = Math.random() > 0.9 ? 1 : -1;
+            const polarity = (1 + Math.random() * 5) * sign;
+            this.magnets.push(new Magnet(polarity, new Vector2(mouseX, mouseY)))
+       }
+       this.mouseDownPrev = mouseDown;
+
        if(Math.random() > 0.95 && this.magnets.length < 50) {
         this.addRandomMagnet();
        }

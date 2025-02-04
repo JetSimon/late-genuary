@@ -106,6 +106,7 @@ var Day4 = /** @class */ (function (_super) {
     function Day4() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.magnets = [];
+        _this.mouseDownPrev = false;
         return _this;
     }
     Day4.prototype.addRandomMagnet = function () {
@@ -154,6 +155,12 @@ var Day4 = /** @class */ (function (_super) {
         this.ctx.fill();
     };
     Day4.prototype.loop = function () {
+        if (this.mouseDownPrev && !mouseDown) {
+            var sign = Math.random() > 0.9 ? 1 : -1;
+            var polarity = (1 + Math.random() * 5) * sign;
+            this.magnets.push(new Magnet(polarity, new Vector2(mouseX, mouseY)));
+        }
+        this.mouseDownPrev = mouseDown;
         if (Math.random() > 0.95 && this.magnets.length < 50) {
             this.addRandomMagnet();
         }
