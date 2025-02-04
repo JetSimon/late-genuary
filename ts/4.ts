@@ -1,4 +1,5 @@
-const G = 0.5;
+const G = 20;
+const MAX_VEL = 5;
 
 class Magnet {
     polarity : number = 0;
@@ -7,13 +8,14 @@ class Magnet {
     vel : Vector2 = new Vector2(0,0);
     pos : Vector2 = new Vector2(0,0);
     radius : number = 0;
+    baseRadius : number = 0;
+    scaleMultiplier = 0;
 
     constructor(polarity : number, pos : Vector2) {
         this.polarity = polarity;
         this.pos = pos;
-        this.radius = Math.abs(this.polarity);
-        //this.acc = new Vector2(Math.random(), Math.random());
-        this.vel = new Vector2(Math.random(), Math.random());
+        this.baseRadius = Math.abs(this.polarity);
+        this.radius = this.baseRadius;
     }
 
     draw(ctx : CanvasRenderingContext2D) {
@@ -32,16 +34,27 @@ class Magnet {
 
     nextAcc : Vector2;
     nextVel : Vector2;
+    
 
     update(magnets : Magnet[]) {
 
-        this.nextAcc = this.acc;
-        this.nextVel = this.vel;
+        if(this.scaleMultiplier < 1) {
+            this.scaleMultiplier += 0.01;
+            this.scaleMultiplier = clamp(this.scaleMultiplier, 0, 1)
+        }
+        this.radius = this.baseRadius * this.scaleMultiplier;
 
-        if(this.pos.x <= 0 || this.pos.x >= canvas.width || this.pos.y <= 0 || this.pos.y >= canvas.height) {
-            this.nextVel.multiply(-1.01);
+        this.nextAcc = this.acc.multiply(0.05); // friction
+        this.nextVel = this.vel.multiply(1);
+
+        if(this.nextVel.magnitude() > MAX_VEL) {
+            this.nextVel = this.nextVel.norm().multiply(MAX_VEL);
         }
 
+        //const center = new Vector2(canvas.width / 2, canvas.height / 2);
+        //const centerForce : Vector2 = Vector2.subtract(center, this.pos).norm().multiply(1 / Math.pow(Vector2.distance(this.pos, center), 2));
+        //centerForce.multiply(G);
+        
         for(const other of magnets) {
             if (other == this) {
                 continue;
@@ -50,14 +63,14 @@ class Magnet {
             const samePolarity = Math.sign(this.polarity) == Math.sign(other.polarity);
             const polarityMultiplier = samePolarity ? 1 : -1;
 
-            const force : Vector2 = Vector2.subtract(this.pos, other.pos).multiply(polarityMultiplier * Math.abs(this.polarity) * Math.abs(other.polarity)).multiply(1 / Math.pow(Vector2.distance(this.pos, other.pos), 2));
+            const force : Vector2 = Vector2.subtract(this.pos, other.pos).norm().multiply(polarityMultiplier * Math.abs(this.polarity) * Math.abs(other.polarity)).multiply(1 / Math.pow(Vector2.distance(this.pos, other.pos), 2));
             force.multiply(G);
 
             // F = ma => a = F / m
             this.nextAcc.add(force.multiply(1 / Math.abs(this.polarity)));
 
             if(this.collidesWith(other)) {
-                this.nextVel.add(Vector2.subtract(this.pos, other.pos).norm().multiply(Math.abs(other.polarity)));
+                this.nextAcc.add(Vector2.subtract(this.pos, other.pos).norm().multiply(0.9 * Math.abs(other.polarity)));
                 this.pos = Vector2.add(other.pos, Vector2.subtract(this.pos, other.pos).norm().multiply(other.radius + this.radius));
             }
         }
@@ -66,10 +79,23 @@ class Magnet {
     }
 
     applyUpdate() {
-        this.acc = this.nextAcc.multiply(0.1); // Friction
+        this.acc = this.nextAcc;
         this.vel = this.nextVel;
         this.pos.add(this.vel);
-        this.pos = Vector2.clamp(this.pos, new Vector2(0, 0), new Vector2(canvas.width, canvas.height));
+
+        if(this.pos.x > canvas.width + this.radius) {
+            this.pos.x = 0 - this.radius;
+        }
+        else if(this.pos.x < 0 - this.radius) {
+            this.pos.x = canvas.width + this.radius;
+        }
+
+        if(this.pos.y > canvas.height + this.radius) {
+            this.pos.y = 0 - this.radius;
+        }
+        else if(this.pos.y < 0 - this.radius) {
+            this.pos.y = canvas.height + this.radius;
+        }
 
         if(this.acc.isNaN()) {
             this.acc = new Vector2(0,0);
@@ -89,14 +115,26 @@ class Day4 extends Day {
     
     magnets : Magnet[] = [];
 
-    init() {
+    addRandomMagnet() {
         function randomPos() {
             return new Vector2(Math.random() * canvas.width, Math.random() * canvas.height);
         }
+        const sign = Math.random() > 0.9 ? 1 : -1;
+        const polarity = (1 + Math.random() * 5) * sign;
+        this.magnets.push(new Magnet(polarity, randomPos()))
+    }
+
+    init() {
+        this.ctx.fillStyle = "rgba(0, 0, 0, 1)"
+        this.ctx.rect(0, 0, canvas.width, canvas.height);
+        this.ctx.fill();
+
+        this.magnets.push(new Magnet(5, new Vector2(canvas.width * 0.66, canvas.height * 0.66)))
+        this.magnets.push(new Magnet(-5, new Vector2(canvas.width * 0.33, canvas.height * 0.33)))
 
         //this.magnets.push(new Magnet(25, new Vector2(canvas.width / 2, canvas.height / 2)));
 
-        for(let i = 0; i < 50; i++) {
+        /*for(let i = 0; i < 50; i++) {
             const sign = Math.random() > 0.9 ? 1 : -1;
             const polarity = (1 + Math.random() * 5) * sign;
             this.magnets.push(new Magnet(polarity, randomPos()))
@@ -118,19 +156,27 @@ class Day4 extends Day {
             }
         }
 
-        this.magnets = this.magnets.filter((x) => !toRemove.has(x));
+        this.magnets = this.magnets.filter((x) => !toRemove.has(x));*/
     }
 
     cleanup() {
         this.magnets = [];
+        this.ctx.fillStyle = "rgba(255, 255, 255, 1)"
+        this.ctx.rect(0, 0, canvas.width, canvas.height);
+        this.ctx.fill();
     }
 
     loop() {
+       
+       if(Math.random() > 0.95 && this.magnets.length < 50) {
+        this.addRandomMagnet();
+       }
+
        for(const magnet of this.magnets) {
             magnet.update(this.magnets);
        }
 
-       this.ctx.fillStyle = "rgba(0, 0, 0, 0.01)"
+       this.ctx.fillStyle = "rgba(0, 0, 0, 0.02)"
        this.ctx.rect(0, 0, canvas.width, canvas.height);
        this.ctx.fill();
 

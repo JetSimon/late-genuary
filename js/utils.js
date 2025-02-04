@@ -56,7 +56,8 @@ var Vector2 = /** @class */ (function () {
         return new Vector2(clamp(x.x, min.x, max.x), clamp(x.y, min.y, max.y));
     };
     Vector2.prototype.norm = function () {
-        return this.multiply(1 / this.magnitude());
+        var mag = this.magnitude();
+        return mag == 0 ? new Vector2(0, 0) : Vector2.multiply(this, (1 / mag));
     };
     Vector2.prototype.isNaN = function () {
         return isNaN(this.x) || isNaN(this.y);

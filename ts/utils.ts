@@ -72,7 +72,8 @@ class Vector2 {
     }
 
     norm() {
-        return this.multiply(1 / this.magnitude());
+        const mag = this.magnitude();
+        return mag == 0 ? new Vector2(0,0) : Vector2.multiply(this, (1 / mag));
     }
 
     isNaN() {
