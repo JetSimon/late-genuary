@@ -53,8 +53,8 @@ function stopDay(day) {
         return;
     }
     currentDay = null;
-    d.cleanup();
     d.stop();
+    d.cleanup();
 }
 canvas.addEventListener("mousemove", function (e) {
     if (currentDay == null) {

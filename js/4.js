@@ -181,5 +181,4 @@ var Day4 = /** @class */ (function (_super) {
 }(Day));
 var day4 = new Day4(4, ctx, "Black on black.");
 addDay(day4);
-startDay(4);
 //# sourceMappingURL=4.js.map

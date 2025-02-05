@@ -9,8 +9,45 @@ var RGBA = /** @class */ (function () {
         this.b = b;
         this.a = a;
     }
+    RGBA.fromHsl = function (h, s, l) {
+        var hueToRgb = function (p, q, t) {
+            if (t < 0)
+                t += 1;
+            if (t > 1)
+                t -= 1;
+            if (t < 1 / 6)
+                return p + (q - p) * 6 * t;
+            if (t < 1 / 2)
+                return q;
+            if (t < 2 / 3)
+                return p + (q - p) * (2 / 3 - t) * 6;
+            return p;
+        };
+        var r, g, b;
+        if (s === 0) {
+            r = g = b = l; // achromatic
+        }
+        else {
+            var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+            var p = 2 * l - q;
+            r = hueToRgb(p, q, h + 1 / 3);
+            g = hueToRgb(p, q, h);
+            b = hueToRgb(p, q, h - 1 / 3);
+        }
+        return new RGBA(Math.round(r * 255), Math.round(g * 255), Math.round(b * 255), 1);
+    };
+    RGBA.lerpColor = function (a, b, t) {
+        return new RGBA(lerp(a.r, b.r, t), lerp(a.g, b.g, t), lerp(a.b, b.b, t), lerp(a.a, b.a, t));
+    };
     return RGBA;
 }());
+function randomRange(min, max) {
+    return min + (Math.random() * (max - min));
+}
+function lerp(a, b, t) {
+    t = clamp(t, 0, 1);
+    return (1 - t) * a + t * b;
+}
 var Vector2 = /** @class */ (function () {
     function Vector2(x, y) {
         this.x = x;

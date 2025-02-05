@@ -197,5 +197,3 @@ class Day4 extends Day {
 
 const day4 = new Day4(4, ctx, "Black on black.");
 addDay(day4);
-
-startDay(4);
