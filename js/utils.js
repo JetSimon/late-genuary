@@ -1,5 +1,6 @@
 var RGBA = /** @class */ (function () {
     function RGBA(r, g, b, a) {
+        if (a === void 0) { a = 1; }
         this.r = 0;
         this.g = 0;
         this.b = 0;
@@ -38,6 +39,9 @@ var RGBA = /** @class */ (function () {
     };
     RGBA.lerpColor = function (a, b, t) {
         return new RGBA(lerp(a.r, b.r, t), lerp(a.g, b.g, t), lerp(a.b, b.b, t), lerp(a.a, b.a, t));
+    };
+    RGBA.prototype.toRGBString = function () {
+        return "rgb(".concat(this.r, ", ").concat(this.g, ", ").concat(this.b, ")");
     };
     return RGBA;
 }());
@@ -116,4 +120,12 @@ function makeEmptyGrid(height, width, defaultValue) {
     return grid;
 }
 ;
+function sinNow01(period) {
+    if (period === void 0) { period = 1; }
+    return (Math.sin(period * Date.now()) + 1) / 2;
+}
+function cosNow01(period) {
+    if (period === void 0) { period = 1; }
+    return (Math.cos(period * Date.now()) + 1) / 2;
+}
 //# sourceMappingURL=utils.js.map

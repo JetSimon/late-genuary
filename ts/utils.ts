@@ -4,7 +4,7 @@ class RGBA {
     b: number = 0;
     a: number = 0;
 
-    constructor(r: number, g: number, b: number, a: number) {
+    constructor(r: number, g: number, b: number, a: number = 1) {
         this.r = r;
         this.g = g;
         this.b = b;
@@ -39,6 +39,10 @@ class RGBA {
 
     static lerpColor(a : RGBA, b : RGBA, t : number) {
         return new RGBA(lerp(a.r, b.r, t), lerp(a.g, b.g, t), lerp(a.b, b.b, t), lerp(a.a, b.a, t));
+    }
+
+    toRGBString() {
+        return `rgb(${this.r}, ${this.g}, ${this.b})`
     }
 }
 
@@ -135,3 +139,11 @@ function makeEmptyGrid<T>(height: number, width: number, defaultValue: T) {
     }
     return grid;
 };
+
+function sinNow01(period = 1) {
+    return (Math.sin(period * Date.now()) + 1) / 2
+}
+
+function cosNow01(period = 1) {
+    return (Math.cos(period * Date.now()) + 1) / 2
+}

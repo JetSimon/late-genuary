@@ -123,5 +123,4 @@ var Day5 = /** @class */ (function (_super) {
 }(Day));
 var day5 = new Day5(5, ctx, "Isometric Art (No vanishing points).");
 addDay(day5);
-startDay(5);
 //# sourceMappingURL=5.js.map

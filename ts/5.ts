@@ -122,5 +122,3 @@ class Day5 extends Day {
 
 const day5 = new Day5(5, ctx, "Isometric Art (No vanishing points).");
 addDay(day5);
-
-startDay(5);
